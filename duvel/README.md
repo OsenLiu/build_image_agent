@@ -4,10 +4,11 @@ A Telegram bot that updates module revisions in a platform YAML file and trigger
 
 ## What it does
 
-- Listens for `/build` commands in Telegram.
-- Updates these module revisions in `platform.yaml`:
+- Listens for `/build` and `/pull_and_build` commands in Telegram.
+- **`/build` command**: Updates these module revisions in `platform.yaml`:
   - `mdep-devicesetupwizard-extra-screens`
   - `mdep-devicesetupwizard-apk`
+- **`/pull_and_build` command**: Pulls the latest code from Git and runs the build script.
 - Runs the build script.
 - Checks `build.log` for a success signature and sends the result back to Telegram.
 
@@ -68,6 +69,8 @@ Run the agent:
 python build_agent.py
 ```
 
+### Build with revision updates
+
 In Telegram, send:
 
 ```text
@@ -79,6 +82,16 @@ Example:
 ```text
 /build 1.2.3 4.5.6
 ```
+
+### Pull latest code and build
+
+In Telegram, send:
+
+```text
+/pull_and_build
+```
+
+This command pulls the latest code from Git and runs the build script without requiring revision parameters.
 
 ## Build result detection
 

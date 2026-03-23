@@ -74,6 +74,34 @@ def check_build_result():
     else:
         return False, "❌ Build Failed: Success signature not found in logs."
 
+@bot.message_handler(commands=['pull_and_build'])
+def handle_pull_and_build(message):
+    if ALLOWED_USER_ID and str(message.from_user.id) != str(ALLOWED_USER_ID):
+        bot.reply_to(message, "🚫 Unauthorized.")
+        return
+
+    try:
+        bot.send_message(message.chat.id, "📥 Pulling latest code...")
+        
+        # Git pull
+        result = subprocess.run('git pull', shell=True, cwd=BUILD_CWD, capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            bot.send_message(message.chat.id, f"❌ Git pull failed: {result.stderr}")
+            return
+        
+        bot.send_message(message.chat.id, "✅ Code pulled. Starting build...")
+        
+        # Execute build command
+        subprocess.run(BUILD_CMD, shell=True, cwd=BUILD_CWD)
+        
+        # Check result
+        result_ok, report = check_build_result()
+        bot.send_message(message.chat.id, report)
+    
+    except Exception as e:
+        bot.send_message(message.chat.id, f"⚠️ Agent Error: {str(e)}")
+
 @bot.message_handler(commands=['build'])
 def handle_build(message):
     if ALLOWED_USER_ID and str(message.from_user.id) != str(ALLOWED_USER_ID):
