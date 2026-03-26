@@ -136,6 +136,32 @@ def handle_build(message):
     except Exception as e:
         bot.send_message(message.chat.id, f"⚠️ Agent Error: {str(e)}")
 
+@bot.message_handler(commands=['clean_build'])
+def handle_clean_build(message):
+    if ALLOWED_USER_ID and str(message.from_user.id) != str(ALLOWED_USER_ID):
+        bot.reply_to(message, "🚫 Unauthorized.")
+        return
+
+    try:
+        # 1. Clean build directory
+        bot.send_message(message.chat.id, "🧹 Cleaning build directory...")
+        clean_result = subprocess.run('rm -rf w4duvel-build-dir/', shell=True, cwd=BUILD_CWD, capture_output=True, text=True)
+
+        if clean_result.returncode != 0:
+            bot.send_message(message.chat.id, f"❌ Clean failed: {clean_result.stderr}")
+            return
+
+        # 2. Build process
+        bot.send_message(message.chat.id, "🛠 Clean complete. Starting build...")
+        subprocess.run(BUILD_CMD, shell=True, cwd=BUILD_CWD)
+
+        # 3. Final Report
+        result_ok, report = check_build_result()
+        bot.send_message(message.chat.id, report)
+
+    except Exception as e:
+        bot.send_message(message.chat.id, f"⚠️ Agent Error: {str(e)}")
+
 if __name__ == '__main__':
     print("Agent started. Listening for commands...")
     bot.polling()

@@ -4,10 +4,11 @@ A Telegram bot that updates module revisions in a platform YAML file and trigger
 
 ## What it does
 
-- Listens for `/build` and `/pull_and_build` commands in Telegram.
+- Listens for `/build`, `/clean_build`, and `/pull_and_build` commands in Telegram.
 - **`/build` command**: Updates these module revisions in `platform.yaml`:
   - `mdep-devicesetupwizard-extra-screens`
   - `mdep-devicesetupwizard-apk`
+- **`/clean_build` command**: Removes `w4duvel-build-dir/`, then runs the build script.
 - **`/pull_and_build` command**: Pulls the latest code from Git and runs the build script.
 - Runs the build script.
 - Checks `build.log` for a success signature and sends the result back to Telegram.
@@ -92,6 +93,19 @@ In Telegram, send:
 ```
 
 This command pulls the latest code from Git and runs the build script without requiring revision parameters.
+
+### Clean and build
+
+In Telegram, send:
+
+```text
+/clean_build
+```
+
+This command performs:
+
+1. `rm -rf w4duvel-build-dir/`
+2. build
 
 ## Build result detection
 
