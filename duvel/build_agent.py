@@ -10,6 +10,7 @@ ALLOWED_USER_ID = os.getenv('ALLOWED_USER_ID')
 YAML_PATH = '/home/jenkins/Work/mybuild/wave4-platform-builder/platforms/w4duvel/platform.yaml' 
 BUILD_CWD = '/home/jenkins/Work/mybuild/wave4-platform-builder'
 BUILD_CMD = 'bash platforms/w4duvel/run.sh 2>&1 | tee build.log'
+BUILD_CMD_MDEP_ONLY = 'bash platforms/w4duvel/run.sh --mdep-only 2>&1 | tee build.log'
 LOG_FILE = os.path.join(BUILD_CWD, 'build.log')
 
 if not TOKEN:
@@ -93,7 +94,7 @@ def handle_pull_and_build(message):
         bot.send_message(message.chat.id, "✅ Code pulled. Starting build...")
         
         # Execute build command
-        subprocess.run(BUILD_CMD, shell=True, cwd=BUILD_CWD)
+        subprocess.run(BUILD_CMD_MDEP_ONLY, shell=True, cwd=BUILD_CWD)
         
         # Check result
         result_ok, report = check_build_result()
@@ -127,7 +128,7 @@ def handle_build(message):
         bot.send_message(message.chat.id, "🛠 YAML updated. Starting build...")
         
         # Execute shell command
-        subprocess.run(BUILD_CMD, shell=True, cwd=BUILD_CWD)
+        subprocess.run(BUILD_CMD_MDEP_ONLY, shell=True, cwd=BUILD_CWD)
 
         # 3. Final Report
         result_ok, report = check_build_result()
